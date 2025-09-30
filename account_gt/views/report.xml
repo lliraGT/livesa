@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+  <report
+     id="action_libro_compras"
+     string="Libro de compras"
+     model="account_gt.libro_compras.wizard"
+     report_type="qweb-pdf"
+     file="account_gt.reporte_libro_compras"
+     name="account_gt.reporte_libro_compras"
+     />
+
+   <report
+     id="action_libro_diario"
+     model="account_gt.libro_diario.wizard"
+     string="Libro diario"
+     report_type="qweb-pdf"
+     name="account_gt.reporte_libro_diario"
+     file="account_gt.reporte_libro_diario"
+     paperformat="account_gt.paperformat_libro_diario"      />
+
+  <report id="action_libro_ventas"
+      model="account_gt.libro_ventas.wizard"
+      string="Libro de ventas"
+      report_type="qweb-pdf"
+      name="account_gt.reporte_libro_ventas"
+      file="account_gt.reporte_libro_ventas"/>
+
+  <report id="action_libro_bancos"
+      model="account_gt.libro_bancos.wizard"
+      string="Libro de bancos"
+      report_type="qweb-pdf"
+      name="account_gt.reporte_libro_bancos"
+      file="account_gt.reporte_libro_banos"/>
+
+
+
+  <!-- <record id="action_libro_conciliacion_bancaria"
+      model="account_gt.libro_conciliacion_bancaria.wizard"
+      string="Libro conciliacion bancaria"
+      report_type="qweb-pdf"
+      name="account_gt.reporte_libro_conciliacion_bancaria"
+      file="account_gt.reporte_libro_conciliacion_bancaria"/> -->
+
+
+    <!-- <data>
+
+
+    </data> -->
+</odoo>

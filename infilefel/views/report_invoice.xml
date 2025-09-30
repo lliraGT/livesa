@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <template id="digifactfel_report_invoice_document" inherit_id="account.report_invoice_document">
+            <xpath expr="//div[@id='informations']" position="before">
+                <t t-if="o.fel_numero_autorizacion">
+                    <div id="digifact_feel_invoice_info">
+                        <div class="text-center">
+                            Documento Tributario Electrónico
+                        </div>
+                        <table class="table table-sm o_main_table">
+                            <thead>
+                                <tr>
+                                    <th scope="col">Serie:</th>
+                                    <th scope="col">No.</th>
+                                    <th scope="col">Firma Electronica:</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <td>
+                                    <span t-field="o.fel_serie"/>
+                                </td>
+                                <td>
+                                    <span t-field="o.fel_numero"/>
+                                </td>
+                                <td>
+                                    <span t-field="o.fel_numero_autorizacion"/>
+                                </td>
+                            </tbody>
+                        </table>
+                    </div>
+                </t>
+            </xpath>
+            <xpath expr="//p[@name='incoterm']" position="after">
+                <t t-if="o.fel_numero_autorizacion">
+                    <div>
+                        <strong>Total:</strong> <span t-esc="o.currency_id.amount_to_text(o.amount_total)"/>
+                        <br  />
+                    </div>
+                    <div id="digifact_feel_invoice_data_extra">
+                        Por favor utilice la siguiente referencia al realizar su pago: Feel: Serie: <span t-field="o.fel_serie"/> No. <span t-field="o.fel_numero"/> Firma Electrónica: <span t-field="o.fel_numero_autorizacion"/>
+                    </div>
+                    <t t-if="o.company_id.fel_logo">
+                        <div style="position:absolute;top:850px; page-break-inside: avoid;">
+                          <img t-att-src="'data:image/png;base64,%s' % to_text(o.company_id.fel_logo)"  class="border border-black" style="height: 80px; width: 100px;"/>
+                          <t t-if="o.company_id.fel_texto_logo">
+                              <span t-esc="o.company_id.fel_texto_logo"/>
+                          </t>
+                        </div>
+                    </t>
+                    <div class="barcode">
+                        <center><img alt="Barcode" t-att-src="'/report/barcode/?type=QR&amp;value=%s&amp;width=180&amp;height=180'
+                          % quote_plus('https://report.feel.com.gt/ingfacereport/ingfacereport_documento?uuid='+o.fel_numero_autorizacion)
+                          "/></center>
+                    </div>
+                </t>
+            </xpath>
+        </template>
+
+
+    </data>
+</odoo>

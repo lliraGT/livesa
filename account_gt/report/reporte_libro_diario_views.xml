@@ -1,0 +1,222 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+      <template id="reporte_libro_diario">
+
+        <t t-call="web.html_container">
+            <t t-set="data_report_margin_top" t-value="5"/>
+            <t t-set="data_report_header_spacing" t-value="5"/>
+            <t t-set="data_report_dpi" t-value="110"/>
+            <div class="page">
+                <div class="encabezado">
+                    <h2>
+                            <center>
+                                <span t-esc="company.name"/><br/>
+                                NIT: <span t-esc="company.vat"/><br/>
+                                Libro Diario<br/>
+                                PERIODO DEL <span t-esc="data['fecha_inicio']" t-options='{"widget": "date"}'/> AL <span t-esc="data['fecha_fin']" t-options='{"widget": "date"}'/> <br/>
+                                CIFRAS EXPRESADAS EN QUETZALES
+                            </center>
+                    </h2>
+
+                </div>
+                <br/>
+
+                <t t-set="reporte_data" t-value="get_data(data['fecha_inicio'], data['fecha_fin'], data['diario_ids'], data['consolidado'], data['movimientos_destino'])"/>
+                <t t-set="reporte_data_consolidado" t-value="get_data_consolidado(data['fecha_inicio'], data['fecha_fin'], data['diario_ids'], data['consolidado'], data['movimientos_destino'] )"/>
+
+                    <style type="text/css">
+
+                      .styled-table {
+                          width:100%;
+                          border-collapse: collapse;
+                          margin: 25px 0;
+                          font-size: 0.9em;
+                          font-family: sans-serif;
+
+                          box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
+                      }MYS00350
+
+                       .styled-table thead tr {
+                          background-color: #7F7F7F;
+                          color: #ffffff;
+                          text-align: left;
+                      }
+
+                      .styled-table th,
+                      .styled-table td {
+                          padding: 12px 15px;
+                      }
+
+                                              .styled-table tbody tr {
+                          border-bottom: 1px solid #dddddd;
+                      }
+
+                      .styled-table tbody tr:nth-of-type(even) {
+                          background-color: #f3f3f3;
+                      }
+
+                      .styled-table tbody tr:last-of-type {
+                          border-bottom: 2px solid #009879;
+                      }
+
+                                              .styled-table tbody tr.active-row {
+                          font-weight: bold;
+                          color: #009879;
+                      }
+                    </style>
+
+                    <t t-if="reporte_data">
+
+                      <table class="styled-table" >
+                              <thead>
+                                  <tr>
+                                      <th>Asiento</th>
+                                      <th>Fecha</th>
+                                      <th>Codigo</th>
+                                      <th>Cuenta</th>
+                                      <th>Descripcion</th>
+                                      <th class="text-right">Debe</th>
+                                      <th class="text-right">Haber</th>
+                                  </tr>
+                              </thead>
+                              <tbody>
+                                  <t t-foreach="reporte_data" t-as="diario">
+
+
+                                      <tr>
+                                          <td colspan="4"><strong><span t-esc="reporte_data[diario]['diario']"/></strong></td>
+                                      </tr>
+
+                                      <t t-foreach="reporte_data[diario]['asientos']" t-as="asiento">
+                                          <t t-foreach="reporte_data[diario]['asientos'][asiento]['movimientos']" t-as="m">
+                                              <tr>
+                                                  <t t-if="m['debe'] > 0">
+                                                      <td><span t-esc="m['nombre_movimiento']"/></td>
+                                                      <td><span t-esc="m['fecha']" t-options='{"widget": "date"}'/></td>
+                                                  </t>
+                                                  <t t-else="">
+                                                      <td></td>
+                                                      <td></td>
+                                                  </t>
+                                                  <td><span t-esc="m['codigo']"/></td>
+                                                  <td><span t-esc="m['nombre_cuenta']"/></td>
+                                                  <td><span t-esc="m['descripcion']"/></td>
+                                                  <td class="text-right">Q <span t-esc="m['debe']" t-options='{"widget": "float", "precision": 2}'/></td>
+                                                  <td class="text-right">Q <span t-esc="m['haber']" t-options='{"widget": "float", "precision": 2}'/></td>
+                                              </tr>
+                                          </t>
+                                          <tr>
+                                              <td></td>
+                                              <td></td>
+                                              <td></td>
+                                              <td></td>
+                                              <td><strong>Total</strong></td>
+                                              <td class="text-right"><strong>Q <span t-esc="reporte_data[diario]['asientos'][asiento]['total_debe']" t-options='{"widget": "float", "precision": 2}'/></strong></td>
+                                              <td class="text-right"><strong>Q <span t-esc="reporte_data[diario]['asientos'][asiento]['total_haber']" t-options='{"widget": "float", "precision": 2}'/></strong></td>
+                                          </tr>
+
+                                      </t>
+
+                                      <tr>
+                                          <td></td>
+                                          <td></td>
+                                          <td></td>
+                                          <td></td>
+                                          <td><strong>Total Diario</strong></td>
+                                          <td class="text-right"><strong>Q <span t-esc="reporte_data[diario]['total_debe']" t-options='{"widget": "float", "precision": 2}'/></strong></td>
+                                          <td class="text-right"><strong>Q <span t-esc="reporte_data[diario]['total_haber']" t-options='{"widget": "float", "precision": 2}'/></strong></td>
+                                      </tr>
+
+                                  </t>
+                              </tbody>
+
+                      </table>
+
+                    </t>
+
+                    <t t-if="reporte_data_consolidado">
+                      <table class="styled-table" >
+                              <thead>
+                                  <tr>
+                                      <th>Codigo</th>
+                                      <th>Cuenta</th>
+                                      <th class="text-right">Debe</th>
+                                      <th class="text-right">Haber</th>
+                                  </tr>
+                              </thead>
+                              <tbody>
+                                  <t t-foreach="reporte_data_consolidado" t-as="llave_mes">
+
+                                    <t t-if="llave_mes != 'total_debe'">
+
+                                      <t t-if="llave_mes != 'total_haber'">
+
+                                        <tr>
+                                            <td colspan="4"><h2><strong><span t-esc="reporte_data_consolidado[llave_mes]['nombre_mes']"/></strong></h2></td>
+                                        </tr>
+
+                                        <t t-foreach="reporte_data_consolidado[llave_mes]" t-as="llave_diario">
+                                          <t t-if="llave_diario != 'nombre_mes'">
+
+                                            <t t-if="llave_diario != 'total_debe'">
+
+                                              <t t-if="llave_diario != 'total_haber'">
+
+                                                <tr>
+                                                  <td colspan="4"><strong><span t-esc="reporte_data_consolidado[llave_mes][llave_diario]['diario']"/></strong></td>
+                                                  <t t-foreach="reporte_data_consolidado[llave_mes][llave_diario]['movimientos_agrupados']" t-as="m_a">
+                                                    <tr>
+                                                      <td><span t-esc="reporte_data_consolidado[llave_mes][llave_diario]['movimientos_agrupados'][m_a]['codigo']"/></td>
+                                                      <td><span t-esc="reporte_data_consolidado[llave_mes][llave_diario]['movimientos_agrupados'][m_a]['nombre_cuenta']"/></td>
+                                                      <td style="text-align:right">Q <span t-esc="reporte_data_consolidado[llave_mes][llave_diario]['movimientos_agrupados'][m_a]['debe']" t-options='{"widget": "float", "precision": 2}'/></td>
+                                                      <td style="text-align:right">Q <span t-esc="reporte_data_consolidado[llave_mes][llave_diario]['movimientos_agrupados'][m_a]['haber']" t-options='{"widget": "float", "precision": 2}'/></td>
+                                                    </tr>
+                                                  </t>
+                                                </tr>
+                                                <tr>
+                                                  <td colspan="2"><strong>Total diario</strong></td>
+                                                  <td colspan="1" style="text-align:right"><strong>Q <span t-esc="reporte_data_consolidado[llave_mes][llave_diario]['total_debe']" t-options='{"widget": "float", "precision": 2}'/></strong></td>
+                                                  <td colspan="1" style="text-align:right"><strong>Q <span t-esc="reporte_data_consolidado[llave_mes][llave_diario]['total_haber']" t-options='{"widget": "float", "precision": 2}'/></strong></td>
+                                                </tr>
+
+                                              </t>
+
+                                            </t>
+
+                                          </t>
+                                        </t>
+
+                                        <tr>
+                                            <td colspan="2"><h3><strong>Total de <span t-esc="reporte_data_consolidado[llave_mes]['nombre_mes']"/>: </strong></h3></td>
+                                            <td colspan="1" style="text-align:right"><h3><strong>Q <span t-esc="reporte_data_consolidado[llave_mes]['total_debe']" t-options='{"widget": "float", "precision": 2}'/></strong></h3></td>
+                                            <td colspan="1" style="text-align:right"><h3><strong>Q <span t-esc="reporte_data_consolidado[llave_mes]['total_haber']" t-options='{"widget": "float", "precision": 2}'/></strong></h3></td>
+                                        </tr>
+
+                                      </t>
+
+                                    </t>
+
+                                  </t>
+
+                                  <tr>
+                                      <td colspan="2"><h2><strong>Total general </strong></h2></td>
+                                      <td colspan="1" style="text-align:right"><h3><strong>Q <span t-esc="reporte_data_consolidado['total_debe']" t-options='{"widget": "float", "precision": 2}'/></strong></h3></td>
+                                      <td colspan="1" style="text-align:right"><h3><strong>Q <span t-esc="reporte_data_consolidado['total_haber']" t-options='{"widget": "float", "precision": 2}'/></strong></h3></td>
+                                  </tr>
+                              </tbody>
+
+                      </table>
+
+                    </t>
+
+            </div>
+
+        </t>
+
+      </template>
+
+    </data>
+</odoo>
+

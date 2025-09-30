@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <record id="account_gt_view_account_form" model="ir.ui.view">
+            <field name="name">account_gt.account.account.form</field>
+            <field name="model">account.account</field>
+            <field name="inherit_id" ref="account.view_account_form"/>
+            <field name="arch" type="xml">
+                <field name="account_type" position="after">
+                    <field name="uso"/>
+                </field>
+            </field>
+        </record>
+
+
+        <record id="view_account_gt_liquidacion_tree" model="ir.ui.view">
+            <field name="name">account_gt.liquidacion.tree</field>
+            <field name="model">account_gt.liquidacion</field>
+            <field name="type">list</field>
+            <field name="arch" type="xml">
+                <list string="Liquidaciones">
+                    <field name="name"/>
+                    <field name="fecha"/>
+                    <field name="state"/>
+                </list>
+            </field>
+        </record>
+
+        <record id="view_account_gt_liquidacion_form" model="ir.ui.view">
+            <field name="name">account_gt.liquidacion.form</field>
+            <field name="model">account_gt.liquidacion</field>
+            <field name="arch" type="xml">
+                <form string="Liquidación">
+                    <header>
+                        <button name="conciliar_liquidacion" type="object"
+                                string="Conciliar liquidacion" class="oe_highlight" invisible="state != 'borrador'"/>
+                        <button name="cancelar_liquidacion" type="object"
+                                string="Cancelar liquidacion" class="oe_highlight" invisible="state != 'conciliado'"/>
+                        <!-- <button name="cambiar_borrador" type="object"
+                                string="Cambiar a borrador" class="oe_highlight"
+                                attrs="{'invisible': [('state', 'in', ['borrador','conciliado'])]}"/> -->
+                        <field name="state" widget="statusbar" statusbar_visible="borrador,conciliado,cancelado"/>
+                    </header>
+                    <sheet>
+                        <div class="oe_title">
+                            <h1>
+                                <field name="name" readonly="1"/>
+                            </h1>
+                        </div>
+                        <group>
+                            <group>
+                                <field name="descripcion"/>
+                                <field name="fecha"/>
+                            </group>
+                            <group>
+                                <field name="diario_id"/>
+                                <field name="cuenta_id"/>
+                                <field name="move_id"/>
+                            </group>
+                        </group>
+                        <notebook>
+                            <page string="Facturas" name="facturas">
+                                <field name="factura_ids">
+                                    <list editable="bottom">
+                                        <field name="factura_id"/>
+                                        <field name="total" sum="total"/>
+                                    </list>
+                                </field>
+                            </page>
+                            <page string="Pagos" name="pagos">
+                                <field name="pago_ids">
+                                    <list editable="bottom">
+                                        <field name="pago_id"/>
+                                        <field name="total"/>
+                                    </list>
+                                </field>
+                            </page>
+                        </notebook>
+                    </sheet>
+                    <chatter/>
+                </form>
+            </field>
+        </record>
+
+        <record id="account_gt_liquidacion_view_search" model="ir.ui.view">
+            <field name="name">account_gt.liquidacion.search</field>
+            <field name="model">account_gt.liquidacion</field>
+            <field name="arch" type="xml">
+                <search string="Buscar liquidacion">
+                    <field name="name" string="Nombre"/>
+                    <field name="fecha"/>
+                    <field name="diario_id"/>
+                    <field name="state"/>
+                </search>
+            </field>
+        </record>
+
+        <record id="action_account_gt_liquidacion" model="ir.actions.act_window">
+            <field name="name">Liquidaciones</field>
+            <field name="res_model">account_gt.liquidacion</field>
+            <field name="view_mode">list,form</field>
+            <field name="domain"></field>
+            <field name="context"></field>
+            <field name="search_view_id" ref="account_gt_liquidacion_view_search"/>
+            <field name="help" type="html">
+              <p class="oe_view_nocontent_create">
+               Click para crear una nuea liquidacion
+              </p>
+            </field>
+        </record>
+
+        <menuitem
+            id="menu_account_gt_liquidacion"
+            name="Liquidaciones"
+            action="action_account_gt_liquidacion"
+            parent="account.menu_finance_payables"
+            sequence="50"/>
+
+    </data>
+</odoo>

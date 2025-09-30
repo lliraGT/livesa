@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+
+  <data>
+    <record model="ir.ui.view" id="account_gt_top_diez_proveedores_form_view">
+        <field name="name">account_gt.top_diez_proveedores.wizard</field>
+        <field name="model">account_gt.top_diez_proveedores.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Resumen de 10 proveedores">
+                <group>
+                    <field name="fecha_inicio"/>
+                    <field name="fecha_fin"/>
+                </group>
+                <group>
+                    <field name="name" invisible="1"/>
+                    <field name="archivo" readonly="1" filename="name"/>
+                </group>
+                <footer>
+                    <!-- <button name="print_report" type="object" string="Generar" class="oe_highlight"/> -->
+                    <button name="print_report_excel" string="Reporte excel" type="object" class="oe_highlight"/>
+                    or
+                    <button special="cancel" string="Cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <act_window id="launch_account_gt_reporte_proveedores"
+                name="Reporte top diez proveedores"
+                binding_model="account.account"
+                res_model="account_gt.top_diez_proveedores.wizard"
+                view_mode="form"
+                target="new"/>
+
+    <menuitem action="launch_account_gt_reporte_proveedores" id="menu_reporte_top_proveedores" parent="account.menu_finance_reports"/>
+
+  </data>
+
+</odoo>
